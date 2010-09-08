@@ -10,31 +10,38 @@ public class JBusTest
 {
   private JBus _bus;
   private Sample1 _sample1;
+  private Sample2 _sample2;
 
   @BeforeMethod
   public void before() {
     _bus = new JBus();
     _sample1 = new Sample1();
+    _sample2 = new Sample2();
   }
 
   @Test
   public void exactEvents() {
     PropertyChangeEvent pce = new PropertyChangeEvent(this, "Prop", "before", "after");
     _bus.register(_sample1);
+    _bus.register(_sample2);
     Assert.assertNull(_sample1.getPce());
+    Assert.assertNull(_sample2.getPce());
     _bus.post(pce);
     assertEquals(_sample1.getPce(), this, "Prop", "before", "after");
+    assertEquals(_sample2.getPce(), this, "Prop", "before", "after");
   }
 
   private void assertEquals(PropertyChangeEvent pce, Object source, String name, Object old,
       Object nnew) {
-    assertEquals(pce, new PropertyChangeEvent(source, name, old, nnew));
+    Assert.assertTrue(pce.getSource() == source);
+    Assert.assertEquals(pce.getPropertyName(), name);
+    Assert.assertEquals(pce.getOldValue(), old);
+    Assert.assertEquals(pce.getNewValue(), nnew);
   }
 
-  private void assertEquals(PropertyChangeEvent pce, PropertyChangeEvent pce2) {
-    Assert.assertTrue(pce.getSource() == pce2.getSource());
-    Assert.assertEquals(pce.getPropertyName(), pce2.getPropertyName());
-    Assert.assertEquals(pce.getOldValue(), pce2.getOldValue());
-    Assert.assertEquals(pce.getNewValue(), pce2.getNewValue());
+  public static void main(String[] args) {
+    JBusTest test = new JBusTest();
+    test.before();
+    test.exactEvents();
   }
 }

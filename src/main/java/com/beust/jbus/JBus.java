@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class JBus {
-  private boolean m_verbose = false;
+  private boolean m_verbose = true;
 
   private Map<Class<?>, List<Target>> m_subscribers = Maps.newHashMap();
 
   public void register(Object object) {
-    for (Method m : object.getClass().getDeclaredMethods()) {
+    for (Method m : object.getClass().getMethods()) {
       Subscriber s = m.getAnnotation(Subscriber.class);
       if (s != null) {
         for (Class<?> type : m.getParameterTypes()) {
@@ -83,8 +83,10 @@ public class JBus {
     for (Class<?> o : m_subscribers.keySet()) {
       Class<? extends Object> eventClass = event.getClass();
       if (o == event.getClass() || o.isAssignableFrom(eventClass)) {
-        result.addAll(filterCategories(m_subscribers.get(o), categories));
-        p("findTarget found base class target:" + o.getName() + " for event:" + event);
+        List<Target> allTargets = m_subscribers.get(o);
+        Collection<? extends Target> filteredTargets = filterCategories(allTargets, categories);
+        result.addAll(filteredTargets);
+        p("Event:" + event + " Targets:" + filteredTargets);
       }
     }
 
@@ -101,6 +103,7 @@ public class JBus {
      String[] patterns = t.getCategoryPatterns();
      for (String pattern : patterns) {
        for (String category : categories) {
+         p("Matching pattern " + pattern + " with " + category);
          if (Pattern.matches(pattern, category)) result.add(t);
        }
      }

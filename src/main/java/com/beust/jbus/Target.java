@@ -31,4 +31,9 @@ public class Target {
 
     return result;
   }
+
+  @Override
+  public String toString() {
+    return "[Target " + _object.getClass().getName() + "." + _method.getName() + "()]";
+  }
 }
