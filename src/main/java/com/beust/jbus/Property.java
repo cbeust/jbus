@@ -11,10 +11,10 @@ public class Property<T>
 {
   private T _value;
   private String  _name;
-  private JBus _bus;
+  private IBus _bus;
   private Object _source;
 
-  public Property(JBus bus, Object source, String name)
+  public Property(IBus bus, Object source, String name)
   {
     _bus = bus;
     _source = source;

@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class JBus {
-  private boolean m_verbose = true;
+public class JBus implements IBus {
+  private boolean m_verbose = false;
 
   private Map<Class<?>, List<Target>> m_subscribers = Maps.newHashMap();
 
+  /* (non-Javadoc)
+   * @see com.beust.jbus.IBus#register(java.lang.Object)
+   */
   public void register(Object object) {
     for (Method m : object.getClass().getMethods()) {
       Subscriber s = m.getAnnotation(Subscriber.class);
@@ -33,6 +36,9 @@ public class JBus {
     }
   }
 
+  /* (non-Javadoc)
+   * @see com.beust.jbus.IBus#unregister(java.lang.Object)
+   */
   public void unregister(Object object) {
     for (Map.Entry<Class<?>, List<Target>> set : m_subscribers.entrySet()) {
       List<Target> targets = set.getValue();
@@ -51,10 +57,21 @@ public class JBus {
     }
   }
 
+  /* (non-Javadoc)
+   * @see com.beust.jbus.IBus#post(java.lang.Object)
+   */
   public void post(Object event) {
     post(event, new String[0]);
   }
 
+//  public void post(PropertyChangeEvent event)
+//  {
+//    post(event, new String[] { event.getPropertyName() });
+//  }
+
+  /* (non-Javadoc)
+   * @see com.beust.jbus.IBus#post(java.lang.Object, java.lang.String[])
+   */
   public void post(Object event, String[] categories) {
     p("Posted:" + event);
     List<Target> target = findTargets(event, categories);
