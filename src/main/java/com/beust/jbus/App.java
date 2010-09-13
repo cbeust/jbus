@@ -20,7 +20,7 @@ public class App {
 //  }
 
   public static void main(String[] args) {
-    JBus jbus = new JBus();
+    IBus jbus = new JBus();
     jbus.register(new App());
     jbus.register(new App2());
     jbus.post(new NotifyEvent("Parent", "notify")); // should be received by both

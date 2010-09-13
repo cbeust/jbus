@@ -8,7 +8,7 @@ import java.beans.PropertyChangeEvent;
 
 public class JBusTest
 {
-  private JBus _bus;
+  private IBus _bus;
   private Sample1 _sample1;
 
   @BeforeMethod
@@ -36,5 +36,12 @@ public class JBusTest
     Assert.assertEquals(pce.getPropertyName(), pce2.getPropertyName());
     Assert.assertEquals(pce.getOldValue(), pce2.getOldValue());
     Assert.assertEquals(pce.getNewValue(), pce2.getNewValue());
+  }
+
+  public static void main(String[] args)
+  {
+    JBusTest jt = new JBusTest();
+    jt.before();
+    jt.exactEvents();
   }
 }
