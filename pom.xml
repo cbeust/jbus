@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.beust</groupId>
   <artifactId>jbus</artifactId>
-  <version>0-4-SNAPSHOT</version>
+  <version>0-4</version>
   <name>JBus</name>
   <description>A simple software message bus</description>
 
