@@ -1,0 +1,4 @@
+mvn source:jar javadoc:jar repository:bundle-create 
+
+echo "To deploy to the release directory: mvn release:clean release:prepare release:perform"
+
