@@ -2,9 +2,35 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.beust</groupId>
   <artifactId>jbus</artifactId>
-  <version>1-0-SNAPSHOT</version>
+  <version>0-1-SNAPSHOT</version>
   <name>JBus</name>
   <description>A simple software message bus</description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git@github.com:cbeust/jcommander.git</connection>
+    <developerConnection>scm:git:git@github.com:cbeust/jcommander.git</developerConnection>
+    <url>git@github.com:cbeust/jcommander.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Cedric Beust</name>
+    </developer>
+  </developers>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>3</version>
+  </parent>
+
   <dependencies>
     <dependency>
       <groupId>com.beust</groupId>
