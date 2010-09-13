@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.beust</groupId>
   <artifactId>jbus</artifactId>
-  <version>0-2</version>
+  <version>0-2-SNAPSHOT</version>
   <name>JBus</name>
   <description>A simple software message bus</description>
 
@@ -14,9 +14,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:cbeust/jcommander.git</connection>
-    <developerConnection>scm:git:git@github.com:cbeust/jcommander.git</developerConnection>
-    <url>git@github.com:cbeust/jcommander.git</url>
+    <connection>scm:git:git@github.com:cbeust/jbus.git</connection>
+    <developerConnection>scm:git:git@github.com:cbeust/jbus.git</developerConnection>
+    <url>git@github.com:cbeust/jbus.git</url>
   </scm>
 
   <developers>
@@ -32,13 +32,6 @@
   </parent>
 
   <dependencies>
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-      <version>1.6</version>
-      <type>pom</type>
-      <scope>compile</scope>
-    </dependency>
     <dependency>
     	<groupId>org.testng</groupId>
     	<artifactId>testng</artifactId>
