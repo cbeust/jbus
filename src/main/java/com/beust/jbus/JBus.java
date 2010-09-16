@@ -2,31 +2,35 @@ package com.beust.jbus;
 
 import com.beust.jbus.internal.Lists;
 import com.beust.jbus.internal.Maps;
+import com.beust.jbus.internal.Sets;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class JBus implements IBus {
   private boolean m_verbose = false;
 
-  private Map<Class<?>, List<Target>> m_subscribers = Maps.newHashMap();
+  private Map<Class<?>, Set<Target>> m_subscribers = Maps.newHashMap();
 
   /* (non-Javadoc)
    * @see com.beust.jbus.IBus#register(java.lang.Object)
    */
   public void register(Object object) {
+    p("Registering object " + object + " # methods:" + object.getClass().getMethods().length);
     for (Method m : object.getClass().getMethods()) {
       Subscriber s = m.getAnnotation(Subscriber.class);
       if (s != null) {
+        p("Found @Subscribers on method:" + m);
         for (Class<?> type : m.getParameterTypes()) {
           p("Registering " + type + " with " + m);
-          List<Target> targetList = m_subscribers.get(type);
+          Set<Target> targetList = m_subscribers.get(type);
           if (targetList == null) {
-            targetList = Lists.newArrayList();
+            targetList = Sets.newHashSet();
             m_subscribers.put(type, targetList);
           }
           Target target = new Target(object, m);
@@ -40,9 +44,9 @@ public class JBus implements IBus {
    * @see com.beust.jbus.IBus#unregister(java.lang.Object)
    */
   public void unregister(Object object) {
-    for (Map.Entry<Class<?>, List<Target>> set : m_subscribers.entrySet()) {
-      List<Target> targets = set.getValue();
-      List<Target> remove = Lists.newArrayList();
+    for (Map.Entry<Class<?>, Set<Target>> set : m_subscribers.entrySet()) {
+      Set<Target> targets = set.getValue();
+      Set<Target> remove = Sets.newHashSet();
       for (Target t : targets) {
         // Note: use ==, not equals()
         if (t.getObject() == object) remove.add(t);
@@ -74,9 +78,10 @@ public class JBus implements IBus {
    */
   public void post(Object event, String[] categories) {
     p("Posted:" + event);
-    List<Target> target = findTargets(event, categories);
-    if (target != null) {
-      for (Target t : target)
+    List<Target> targets = findTargets(event, categories);
+    if (targets != null) {
+      p("  Targets:" + targets);
+      for (Target t : targets)
       {
         try {
           t.getMethod().invoke(t.getObject(), event);
@@ -100,17 +105,19 @@ public class JBus implements IBus {
     for (Class<?> o : m_subscribers.keySet()) {
       Class<? extends Object> eventClass = event.getClass();
       if (o == event.getClass() || o.isAssignableFrom(eventClass)) {
-        List<Target> allTargets = m_subscribers.get(o);
-        Collection<? extends Target> filteredTargets = filterCategories(allTargets, categories);
-        result.addAll(filteredTargets);
-        p("Event:" + event + " Targets:" + filteredTargets);
+        Set<Target> allTargets = m_subscribers.get(o);
+        synchronized(allTargets) {
+          Collection<? extends Target> filteredTargets = filterCategories(allTargets, categories);
+          result.addAll(filteredTargets);
+//          p("Event:" + event + " Targets:" + filteredTargets);
+        }
       }
     }
 
     return result;
   }
 
-  private Collection<? extends Target> filterCategories(List<Target> list,
+  private Collection<? extends Target> filterCategories(Set<Target> list,
       String[] categories)
   {
     if (categories.length == 0) return list;
@@ -129,4 +136,7 @@ public class JBus implements IBus {
     return result;
   }
 
+  public void setVerbose(boolean verbose) {
+    m_verbose = verbose;
+  }
 }
